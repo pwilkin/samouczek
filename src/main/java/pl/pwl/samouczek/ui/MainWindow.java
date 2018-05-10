@@ -7,14 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import pl.pwl.samouczek.orm.jpa.LessonEntity;
-import pl.pwl.samouczek.orm.jpa.MaterialEntity;
-import pl.pwl.samouczek.orm.jpa.UserEntity;
-import pl.pwl.samouczek.persistence.PersistenceConfig;
-import pl.pwl.samouczek.persistence.commons.jpa.JpaEnvironments;
-import pl.pwl.samouczek.renderer.MaterialRenderer;
-import pl.pwl.samouczek.security.AuthenticationService;
-
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
@@ -24,6 +16,14 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
+
+import pl.pwl.samouczek.orm.jpa.LessonEntity;
+import pl.pwl.samouczek.orm.jpa.MaterialEntity;
+import pl.pwl.samouczek.orm.jpa.UserEntity;
+import pl.pwl.samouczek.persistence.PersistenceConfig;
+import pl.pwl.samouczek.persistence.commons.jpa.JpaEnvironments;
+import pl.pwl.samouczek.renderer.MaterialRenderer;
+import pl.pwl.samouczek.security.AuthenticationService;
 
 public class MainWindow extends VerticalLayout {
 
@@ -115,16 +115,18 @@ public class MainWindow extends VerticalLayout {
 
 	protected void loadUserMaterials(Map<LessonEntity, List<MaterialEntity>> userMaterialsByLesson, UserEntity loginInfo) {
 		Set<MaterialEntity> allUserMaterials = loginInfo.getMaterials();
-		for (MaterialEntity mat : allUserMaterials) {
-			if (!userMaterialsByLesson.containsKey(mat.getLesson())) {
-				userMaterialsByLesson.put(mat.getLesson(), new ArrayList<>());
+		if (allUserMaterials != null) {
+			for (MaterialEntity mat : allUserMaterials) {
+				if (!userMaterialsByLesson.containsKey(mat.getLesson())) {
+					userMaterialsByLesson.put(mat.getLesson(), new ArrayList<>());
+				}
+				userMaterialsByLesson.get(mat.getLesson()).add(mat);
 			}
-			userMaterialsByLesson.get(mat.getLesson()).add(mat);
-		}
-		for (List<MaterialEntity> lst : userMaterialsByLesson.values()) {
-			Collections.sort(lst, (mat1, mat2) ->  {
-				return new Integer(mat1.getId()).compareTo(new Integer(mat2.getId()));
-			});
+			for (List<MaterialEntity> lst : userMaterialsByLesson.values()) {
+				Collections.sort(lst, (mat1, mat2) ->  {
+					return new Integer(mat1.getId()).compareTo(new Integer(mat2.getId()));
+				});
+			}
 		}
 	}
 

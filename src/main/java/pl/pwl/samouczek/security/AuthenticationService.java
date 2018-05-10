@@ -4,10 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -16,13 +13,11 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.python.google.common.collect.Sets;
 
-import pl.pwl.samouczek.orm.jpa.MaterialEntity;
+import com.vaadin.server.VaadinSession;
+
 import pl.pwl.samouczek.orm.jpa.UserEntity;
 import pl.pwl.samouczek.persistence.PersistenceServiceProvider;
-import pl.pwl.samouczek.persistence.services.MaterialPersistence;
 import pl.pwl.samouczek.persistence.services.UserPersistence;
-
-import com.vaadin.server.VaadinSession;
 
 public class AuthenticationService {
 
@@ -176,16 +171,16 @@ public class AuthenticationService {
 		userEntity.setEmail(email);
 		userEntity.setFullname(fullName);
 		userEntity.setUsername(username);
-		userEntity.setPassword(UUID.randomUUID().toString());
+		userEntity.setPassword(sha512("pomidor"));//UUID.randomUUID().toString());
 		try {
 			userEntity = userPersistence.save(userEntity);
 		} catch (Exception e) {
 			throw new AccountCreationException("Błąd przy zapisywaniu użytkownika: " + e.getMessage());
 		}
-		MaterialPersistence materialPersistence = PersistenceServiceProvider.getService(MaterialPersistence.class);
+		/*MaterialPersistence materialPersistence = PersistenceServiceProvider.getService(MaterialPersistence.class);
 		MaterialEntity firstMaterial = materialPersistence.load(1);
 		Set<MaterialEntity> materials = Sets.newHashSet(firstMaterial);
-		userEntity.setMaterials(materials);
+		userEntity.setMaterials(materials);*/
 		try {
 			userEntity = userPersistence.save(userEntity);
 		} catch (Exception e) {
